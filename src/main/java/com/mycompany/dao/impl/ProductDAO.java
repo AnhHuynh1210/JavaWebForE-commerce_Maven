@@ -19,7 +19,7 @@ public class ProductDAO extends AbstractDAO<ProductModel> implements IProductDAO
 
     @Override
     public List<ProductModel> findAll(PageRequest page) {
-        StringBuilder sql = new StringBuilder("SELECT sanphamchinh.*, sanphamchinh.id AS sanphamchinh_id, spncc.*, spncc.quantity AS quantityNCC, ctbrand.*, "
+        StringBuilder sql = new StringBuilder("SELECT sanphamchinh.*, sanphamchinh.id AS sanphamchinh_id, spncc.*, spncc.price AS priceNCC, spncc.quantity AS quantityNCC, ctbrand.*, "
                 + "category.id AS category_id, category.code AS category_code, category.name AS category_name, "
                 + "brand.id AS brand_id, brand.code AS brand_code, brand.name AS brand_name "
                 + "FROM sanphamchinh "
@@ -29,7 +29,7 @@ public class ProductDAO extends AbstractDAO<ProductModel> implements IProductDAO
                 + "INNER JOIN brand ON ctbrand.id_brand = brand.id");
 
         sql = querySQL(sql, page);
-        
+
         if (page.getSorter() != null && StringUtils.isNotBlank(page.getSorter().getSortName())
                 && StringUtils.isNotBlank(page.getSorter().getSortBy())) {
             sql.append(" ORDER BY " + page.getSorter().getSortName() + " " + page.getSorter().getSortBy() + "");
@@ -41,8 +41,8 @@ public class ProductDAO extends AbstractDAO<ProductModel> implements IProductDAO
         return getList(sql.toString(), new ProductMapper());
 
     }
-    
-    private StringBuilder querySQL(StringBuilder sql, PageRequest page){
+
+    private StringBuilder querySQL(StringBuilder sql, PageRequest page) {
         if (page.getNameSP() != null && StringUtils.isNotBlank(page.getNameSP())) {
             sql.append(" AND spncc.name LIKE '" + "%" + page.getNameSP() + "%'");
         }
@@ -73,7 +73,7 @@ public class ProductDAO extends AbstractDAO<ProductModel> implements IProductDAO
                 if (!firstRating) {
                     sql.append("OR ");
                 }
-                if (null != rating) 
+                if (null != rating) {
                     switch (rating) {
                         case "5":
                             // If 5 Stars is selected,  filter for ratings greater than or equal to 9.0
@@ -94,6 +94,7 @@ public class ProductDAO extends AbstractDAO<ProductModel> implements IProductDAO
                         default:
                             break;
                     }
+                }
                 firstRating = false;
             }
 
@@ -101,7 +102,7 @@ public class ProductDAO extends AbstractDAO<ProductModel> implements IProductDAO
         }
         return sql;
     }
-    
+
     @Override
     public int getTotalItemBySearch(PageRequest page) {
         StringBuilder sql = new StringBuilder("SELECT count(*) "
@@ -116,7 +117,7 @@ public class ProductDAO extends AbstractDAO<ProductModel> implements IProductDAO
 
     @Override
     public ProductModel findOne(int id) {
-        String sql = "SELECT sanphamchinh.*, sanphamchinh.id AS sanphamchinh_id, spncc.*, spncc.quantity AS quantityNCC, ctbrand.*, "
+        String sql = "SELECT sanphamchinh.*, sanphamchinh.id AS sanphamchinh_id, spncc.*, spncc.quantity AS quantityNCC, spncc.price AS priceNCC, ctbrand.*, "
                 + "category.id AS category_id, category.code AS category_code, category.name AS category_name, "
                 + "brand.id AS brand_id, brand.code AS brand_code, brand.name AS brand_name "
                 + "FROM sanphamchinh "
@@ -132,7 +133,7 @@ public class ProductDAO extends AbstractDAO<ProductModel> implements IProductDAO
 
     @Override
     public List<ProductModel> findRelatedProducts(int id, int id_ctbrand) {
-        String sql = "SELECT sanphamchinh.*, sanphamchinh.id AS sanphamchinh_id, spncc.*, spncc.quantity AS quantityNCC, ctbrand.*, "
+        String sql = "SELECT sanphamchinh.*, sanphamchinh.id AS sanphamchinh_id, spncc.*, spncc.quantity AS quantityNCC, spncc.price AS priceNCC, ctbrand.*, "
                 + "category.id AS category_id, category.code AS category_code, category.name AS category_name, "
                 + "brand.id AS brand_id, brand.code AS brand_code, brand.name AS brand_name "
                 + "FROM sanphamchinh "
@@ -146,55 +147,23 @@ public class ProductDAO extends AbstractDAO<ProductModel> implements IProductDAO
     }
 
     @Override
-    public List<ProductModel> findByCategoryId(int id) {
-        return null;
-    }
-
-    //insert sản phẩm chính
-    @Override
-    public int insertSPC(ProductModel product) {
-        String sql = "INSERT INTO sanphamchinh (id_spncc, quantity, price,discount,rating) VALUES (?, ?, ?, ?, ?)";
-        return insert(sql, product.getId_spnccSP(), product.getQuantitySP(), product.getPriceSP(),
-                product.getDiscountSP(), product.getRatingSP());
-    }
-
-    //insert sản phẩm nhà cung cấp
-    @Override
-    public int insertSPNCC(ProductModel product) {
-        String sql = "INSERT INTO spncc (name, id_ctbrand, description, updatedAt, origin, quantity, price, image, "
-                + "id_producer, image1, image2, image3) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        return insert(sql, product.getNameSP(), product.getId_ctBrand(), product.getDescriptionSP(),
-                System.currentTimeMillis(), product.getOriginSP(), product.getQuantityNCC(), product.getPriceSP(), product.getImageSP(), product.getId_producer(), product.getImageSP1(), product.getImageSP2(), product.getImageSP3());
+    public int insert(ProductModel product) {
+        String sql = "INSERT INTO sanphamchinh (id_spncc, quantity, price, discount, rating) VALUES (?, ?, ?, ?, ?)";
+        return insert(sql, product.getId_spncc(), product.getQuantity(), product.getPrice(),
+                product.getDiscount(), product.getRating());
     }
 
     @Override
-    public void updateSPC(ProductModel product) {
-        String sql = "UPDATE sanphamchinh SET quantity = quantity + ?, price = ? , rating = ?, discount = ? "
+    public void update(ProductModel product) {
+        String sql = "UPDATE sanphamchinh SET quantity = ?, price = ?, rating = ?, discount = ? "
                 + "WHERE id = ?";
-        update(sql, product.getQuantitySP(), product.getPriceSP(),
-                product.getRatingSP(), product.getDiscountSP(), product.getId());
+        update(sql, product.getQuantity(), product.getPrice(),
+                product.getRating(), product.getDiscount(), product.getId());
     }
-
+    
     @Override
-    public void updateSPNCC(ProductModel product) {
-        String sql = "UPDATE spncc SET name = ?, id_ctbrand = ?, description = ?, updatedAt = ?, origin = ?, "
-                + "quantity = ?, price = ?, image = ?, id_producer = ?, image1 = ?, image2 = ?, image3 = ? WHERE id = ?";
-        update(sql, product.getNameSP(), product.getId_ctBrand(),
-                product.getDescriptionSP(), System.currentTimeMillis(), product.getOriginSP(),
-                product.getQuantityNCC(), product.getPriceSP(), product.getImageSP(),
-                product.getId_producer(), product.getImageSP1(), product.getImageSP2(),
-                product.getImageSP3(), product.getId());
-    }
-
-    @Override
-    public void deleteSPC(int id) {
+    public void delete(int id) {
         String sql = "DELETE FROM sanphamchinh WHERE id = ?";
-        update(sql, id);
-    }
-
-    @Override
-    public void deleteSPNCC(int id) {
-        String sql = "DELETE FROM spncc WHERE id = ?";
         update(sql, id);
     }
 
@@ -202,6 +171,22 @@ public class ProductDAO extends AbstractDAO<ProductModel> implements IProductDAO
     public int getTotalItem() {
         String sql = "SELECT count(*) FROM sanphamchinh";
         return count(sql);
+    }
+
+    @Override
+    public ProductModel findOneByNCC(int id_spncc) {
+        String sql = "SELECT sanphamchinh.*, sanphamchinh.id AS sanphamchinh_id, spncc.*, spncc.quantity AS quantityNCC, spncc.price AS priceNCC, ctbrand.*, "
+                + "category.id AS category_id, category.code AS category_code, category.name AS category_name, "
+                + "brand.id AS brand_id, brand.code AS brand_code, brand.name AS brand_name "
+                + "FROM sanphamchinh "
+                + "INNER JOIN spncc ON sanphamchinh.id_spncc = spncc.id "
+                + "INNER JOIN ctbrand ON spncc.id_ctbrand = ctbrand.id "
+                + "INNER JOIN category ON ctbrand.id_category = category.id "
+                + "INNER JOIN brand ON ctbrand.id_brand = brand.id "
+                + "WHERE sanphamchinh.id_spncc = ?";
+
+        List<ProductModel> products = getList(sql, new ProductMapper(), id_spncc);
+        return products.isEmpty() ? null : products.get(0);
     }
 
 }

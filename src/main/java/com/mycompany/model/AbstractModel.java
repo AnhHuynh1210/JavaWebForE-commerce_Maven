@@ -13,10 +13,10 @@ import java.util.List;
  * @author ASUS
  */
 public class AbstractModel<T> {
-    private int id;
+    private Integer id;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private long[] ids;
+    private int[] ids;
     private List<T> listResult = new ArrayList<>();
     private Integer page;
     private Integer maxPageItem;
@@ -28,11 +28,11 @@ public class AbstractModel<T> {
     private String message;
     private String type;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -52,11 +52,11 @@ public class AbstractModel<T> {
         this.updatedAt = updatedAt;
     }
     
-    public long[] getIds() {
+    public int[] getIds() {
         return ids;
     }
 
-    public void setIds(long[] ids) {
+    public void setIds(int[] ids) {
         this.ids = ids;
     }
 

@@ -4,6 +4,7 @@
     Author     : ASUS
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
@@ -30,42 +31,53 @@
 
     <!-- Heading -->
     <div class="sidebar-heading">
-        Interface
+        Management
     </div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- Nav Item - Account -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-           aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-cog"></i>
-            <span>Components</span>
+        <a class="nav-link" href="#">
+            <i class="fa fa-users"></i>
+            <span>Account</span>
         </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+    </li>
+
+    <!-- Nav Item - Order -->
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="fa fa-list-alt"></i>
+            <span>Order</span>
+        </a>
+    </li>
+    
+    <!-- Nav Item - Product -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProduct"
+           aria-expanded="true" aria-controls="collapseProduct">
+            <i class="fa fa-shopping-basket"></i>
+            <span>Product</span></a>
+           
+        <div id="collapseProduct" class="collapse" aria-labelledby="headingProduct" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Components:</h6>
-                <a class="collapse-item" href="buttons.html">Buttons</a>
-                <a class="collapse-item" href="cards.html">Cards</a>
+                <h6 class="collapse-header">Product Management</h6>
+                <a class="collapse-item" href="<c:url value="/admin-product-supplier?type=list"/>">Supplier Products</a>
+                <a class="collapse-item" href="<c:url value="/admin-product?type=list"/>">Sales Products</a>
             </div>
         </div>
     </li>
-
-    <!-- Nav Item - Utilities Collapse Menu -->
+    
+    <!-- Nav Item - Category -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-           aria-expanded="true" aria-controls="collapseUtilities">
-            <i class="fas fa-fw fa-wrench"></i>
-            <span>Utilities</span>
-        </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-             data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Utilities:</h6>
-                <a class="collapse-item" href="utilities-color.html">Colors</a>
-                <a class="collapse-item" href="utilities-border.html">Borders</a>
-                <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                <a class="collapse-item" href="utilities-other.html">Other</a>
-            </div>
-        </div>
+        <a class="nav-link" href="tables.html">
+            <i class="fa fa-sitemap"></i>
+            <span>Category</span></a>
+    </li>
+    
+    <!-- Nav Item - Brand -->
+    <li class="nav-item">
+        <a class="nav-link" href="tables.html">
+            <i class="fa fa-tag"></i>
+            <span>Brand</span></a>
     </li>
 
     <!-- Divider -->

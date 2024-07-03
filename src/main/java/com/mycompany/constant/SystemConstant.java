@@ -10,6 +10,7 @@ package com.mycompany.constant;
  */
 public class SystemConstant {
     public static final String PRODUCT_MODEL = "productModel";
+    public static final String PRODUCT_SUPPLIER_MODEL = "productSupplierModel";
     public static final String CATEGORY_MODEL = "categoryModel";
     public static final String BRAND_MODEL = "brandModel";
     public static final String ORDER_MODEL = "orderModel";

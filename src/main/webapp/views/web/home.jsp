@@ -13,7 +13,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Trang chủ</title>
-        
+
     </head>
     <body>
         <!-- Banner-->
@@ -101,15 +101,15 @@
                                         <div class="col mb-5">
                                             <div class="card h-100">
                                                 <!-- Product image-->
-                                                <img class="card-img-top" src="${item.imageSP}" alt="..." />
+                                                <img class="card-img-top" src="${item.productSupplier.image}" alt="..." />
                                                 <!-- Product details-->
                                                 <div class="card-body p-4">
                                                     <div class="text-center">
                                                         <!-- Product name-->
-                                                        <h5 class="fw-bolder">${item.nameSP}</h5>
+                                                        <h5 class="fw-bolder">${item.productSupplier.name}</h5>
                                                         <!-- rating-->
                                                         <div class="d-flex justify-content-center small text-warning mb-2">
-                                                            <c:set var="rating" value="${item.ratingSP}" />
+                                                            <c:set var="rating" value="${item.rating}" />
                                                             <c:choose>
                                                                 <c:when test="${rating >= 9}">
                                                                     <div class="bi-star-fill"></div>
@@ -137,14 +137,16 @@
                                                         </div>
                                                         <!-- Product price-->
                                                         <c:choose>
-                                                            <c:when test="${item.discountSP != 0}">
+                                                            <c:when test="${item.discount != 0}">
                                                                 <span class="text-muted text-decoration-line-through">
-                                                                    <c:set var="OriginalPrice" value="${item.priceSP / ((100-item.discountSP) / 100)}" />
-                                                                    <fmt:formatNumber type="currency" value="${OriginalPrice}" />
+                                                                    <fmt:formatNumber type = "currency" value = "${item.price}" />
                                                                 </span>
                                                             </c:when>
                                                         </c:choose>
-                                                        <fmt:formatNumber type = "currency" value = "${item.priceSP}" />
+                                                        <c:set var="reducedPrice" value="${item.price * ((100-item.discount) / 100)}" />
+                                                        <fmt:formatNumber type="currency" value="${reducedPrice}" />
+
+
                                                     </div>
                                                 </div>
                                                 <!-- Product actions-->
@@ -330,40 +332,40 @@
 
                             products.forEach(function (item) {
                                 var ratingStars = '';
-                                if (item.ratingSP >= 9) {
+                                if (item.rating >= 9) {
                                     ratingStars = '<div class="bi-star-fill"></div>'.repeat(5);
-                                } else if (item.ratingSP >= 7.5) {
+                                } else if (item.rating >= 7.5) {
                                     ratingStars = '<div class="bi-star-fill"></div>'.repeat(4);
-                                } else if (item.ratingSP >= 5.9) {
+                                } else if (item.rating >= 5.9) {
                                     ratingStars = '<div class="bi-star-fill"></div>'.repeat(3);
-                                } else if (item.ratingSP >= 3.5) {
+                                } else if (item.rating >= 3.5) {
                                     ratingStars = '<div class="bi-star-fill"></div>'.repeat(2);
                                 }
 
-                                var originalPrice = item.discountSP != 0 ? (item.priceSP / ((100 - item.discountSP) / 100)) : '';
+                                var reducedPrice = item.discount != 0 ? (item.price / ((100 - item.discount) / 100)) : item.price;
 
                                 // Format the original price and current price
-                                var formattedOriginalPrice = originalPrice ? formatPrice(originalPrice) : '';
-                                var formattedPrice = formatPrice(item.priceSP);
+                                var formattedPrice = formatPrice(item.price);
+                                var formattedReducedPrice = formatPrice(reducedPrice);
                                 productList += `
                                                     <div class="col mb-5">
                                                         <div class="card h-100">
                                                             <!-- Product image-->
-                                                            <img class="card-img-top" src="` + item.imageSP + `" alt="..." />
+                                                            <img class="card-img-top" src="` + item.productSupplier.image + `" alt="..." />
                                                             <!-- Product details-->
                                                             <div class="card-body p-4">
                                                                 <div class="text-center">
                                                                     <!-- Product name-->
-                                                                    <h5 class="fw-bolder">` + item.nameSP + `</h5>
+                                                                    <h5 class="fw-bolder">` + item.productSupplier.name + `</h5>
                                                                     <!-- rating-->
                                                                     <div class="d-flex justify-content-center small text-warning mb-2">
                                                                        ` + ratingStars + `
                                                                     </div>
                                                                     <!-- Product price-->
                                                                         <span class="text-muted text-decoration-line-through">
-                                                                            ` + formattedOriginalPrice + `
+                                                                            ` + formattedPrice + `
                                                                         </span>
-                                                                        ` + formattedPrice + `
+                                                                        ` + formattedReducedPrice + `
                                                                 </div>
                                                             </div>
                                                             <!-- Product actions-->

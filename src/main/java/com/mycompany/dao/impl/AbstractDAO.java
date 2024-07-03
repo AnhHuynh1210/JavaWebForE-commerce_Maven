@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -49,6 +51,10 @@ public class AbstractDAO<T> implements IGenericDAO<T> {
                     statement.setInt(index, (Integer) parameter);
                 } else if (parameter instanceof Double) {
                     statement.setDouble(index, (Double) parameter);
+                } else if (parameter instanceof Timestamp) {
+                    statement.setTimestamp(index, (Timestamp) parameter);
+                }else if (parameter == null) {
+                    statement.setDouble(index, Types.NULL);
                 }
 
             }
@@ -100,6 +106,7 @@ public class AbstractDAO<T> implements IGenericDAO<T> {
             setParameter(statement, parameters);
             statement.executeUpdate();
             conn.commit();
+            System.out.println("update AbstracDAO");
         } catch (SQLException e) {
             if (conn != null) {
                 try {

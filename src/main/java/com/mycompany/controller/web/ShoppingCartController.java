@@ -128,20 +128,20 @@ public class ShoppingCartController extends HttpServlet {
 
             if (cart.containsKey(productId)) {
                 ProductModel existingProduct = cart.get(productId);
-                int quantityNew = existingProduct.getQuantitySP() + quantity;
-                if (quantityNew > productDB.getQuantitySP()) {
-                    quantityNew = productDB.getQuantitySP();
-                    messageWarning = "Bạn đã có " + existingProduct.getQuantitySP() + " sản phẩm trong giỏ hàng. "
-                            + (existingProduct.getQuantitySP() == productDB.getQuantitySP()
+                int quantityNew = existingProduct.getQuantity() + quantity;
+                if (quantityNew > productDB.getQuantity()) {
+                    quantityNew = productDB.getQuantity();
+                    messageWarning = "Bạn đã có " + existingProduct.getQuantity() + " sản phẩm trong giỏ hàng. "
+                            + (existingProduct.getQuantity() == productDB.getQuantity()
                             ? "Không thể thêm số lượng đã chọn vào giỏ hàng vì sẽ vượt quá giới hạn trong kho"
-                            : "Nên chỉ thêm được " + (productDB.getQuantitySP() - existingProduct.getQuantitySP()) + " sản phẩm này vào giỏ")
-                            + " (Kho: " + productDB.getQuantitySP() + ")";
+                            : "Nên chỉ thêm được " + (productDB.getQuantity() - existingProduct.getQuantity()) + " sản phẩm này vào giỏ")
+                            + " (Kho: " + productDB.getQuantity() + ")";
                 }
-                existingProduct.setQuantitySP(quantityNew);
-                existingProduct.setPriceSP(productDB.getPriceSP()); //price current
+                existingProduct.setQuantity(quantityNew);
+                existingProduct.setPrice(productDB.getPrice()); //price current
             } else {
-                productDB.setQuantitySP(quantity);
-                productDB.setPriceSP(productDB.getPriceSP()); //price current
+                productDB.setQuantity(quantity);
+                productDB.setPrice(productDB.getPrice()); //price current
                 cart.put(productId, productDB);
             }
 
@@ -180,11 +180,13 @@ public class ShoppingCartController extends HttpServlet {
             Map<Integer, ProductModel> cart = (Map<Integer, ProductModel>) SessionUtil.getInstance().getValue(request, "CART");
             if (cart != null) {
                 List<ProductModel> productList = new ArrayList<>(cart.values()); // lấy list value
+                
+                Comparator<ProductModel> comparator = Comparator.comparingDouble(p -> (p.getPrice() * ((100 - p.getDiscount()) / 100.0)) * p.getQuantity());
+
                 if (order.equals("ASC")) {
-                    productList.sort(Comparator.comparingDouble(ProductModel::getPriceSP));
+                    productList.sort(comparator);
                 } else if (order.equals("DESC")) {
-                    //productList.sort((p1, p2) -> Double.compare(p2.getPriceSP(), p1.getPriceSP()));
-                    productList.sort(Comparator.comparingDouble(ProductModel::getPriceSP).reversed());
+                    productList.sort(comparator.reversed());
                 }
                 cart.clear();
                 for (ProductModel product : productList) {
@@ -213,8 +215,8 @@ public class ShoppingCartController extends HttpServlet {
                     OrderDetailsModel orderDetailsModel = new OrderDetailsModel();
                     orderDetailsModel.setId_order(orderModel.getId());
                     orderDetailsModel.setProduct(product);
-                    orderDetailsModel.setQuantity(product.getQuantitySP());
-                    orderDetailsModel.setPrice(product.getPriceSP());
+                    orderDetailsModel.setQuantity(product.getQuantity());
+                    orderDetailsModel.setPrice(product.getPrice());
 
                     // Insert order details into the database
                     orderDetailsService.insert(orderDetailsModel);
@@ -275,11 +277,11 @@ public class ShoppingCartController extends HttpServlet {
             ProductModel product = entry.getValue();
             htmlContent.append("<tr>")
                     .append("<td>").append(++count).append("</td>")
-                    .append("<td><img src='").append(product.getImageSP()).append("' style=\"width:150px; height:auto;\"/> </td>")
-                    .append("<td>").append(product.getNameSP()).append("</td>")
-                    .append("<td>").append(product.getQuantitySP()).append("</td>")
-                    .append("<td>").append(formatCurrency(product.getPriceSP())).append("</td>")
-                    .append("<td>").append(formatCurrency(product.getQuantitySP() * product.getPriceSP())).append("</td>")
+                    .append("<td><img src='").append(product.getProductSupplier().getImage()).append("' style=\"width:150px; height:auto;\"/> </td>")
+                    .append("<td>").append(product.getProductSupplier().getName()).append("</td>")
+                    .append("<td>").append(product.getQuantity()).append("</td>")
+                    .append("<td>").append(formatCurrency(product.getPrice())).append("</td>")
+                    .append("<td>").append(formatCurrency(product.getQuantity() * product.getPrice())).append("</td>")
                     .append("</tr>");
         }
 
@@ -300,7 +302,7 @@ public class ShoppingCartController extends HttpServlet {
         double total = 0.0;
         for (Map.Entry<Integer, ProductModel> entry : cart.entrySet()) {
             ProductModel product = entry.getValue();
-            total += product.getQuantitySP() * product.getPriceSP();
+            total += product.getQuantity() * product.getPrice();
         }
         return total;
     }

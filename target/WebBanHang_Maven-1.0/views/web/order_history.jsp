@@ -121,11 +121,11 @@
                             details += '<div class="d-flex justify-content-between">';
                             details += '<div class="d-flex flex-row align-items-center">';
                             details += '<div>';
-                            details += '<img src="' + item.product.imageSP + '" class="img-fluid rounded-3" alt="Shopping item" style="width: 100px;">';
+                            details += '<img src="' + item.product.productSupplier.image + '" class="img-fluid rounded-3" alt="Shopping item" style="width: 100px;">';
                             details += '</div>';
                             details += '<div class="ms-3">';
-                            details += '<h5>' + item.product.nameSP + '</h5>';
-                            details += '<p class="small mb-0">' + item.product.originSP + '</p>';
+                            details += '<h5>' + item.product.productSupplier.name + '</h5>';
+                            details += '<p class="small mb-0">' + item.product.productSupplier.origin + '</p>';
                             details += '</div>';
                             details += '</div>';
                             details += '<div class="d-flex flex-row align-items-center">';
@@ -141,7 +141,6 @@
                             details += '</div>';
                             details += '</div>';
                         });
-                        console.log(details);
                         $('#orderDetails').html(details);
                         $('#detailsModal').modal('show');
                     }

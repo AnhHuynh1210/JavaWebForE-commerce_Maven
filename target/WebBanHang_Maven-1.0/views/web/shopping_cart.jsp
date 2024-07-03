@@ -58,27 +58,28 @@
                                                                     <div class="d-flex flex-row align-items-center">
                                                                         <div>
                                                                             <img
-                                                                                src="${item.imageSP}"
+                                                                                src="${item.productSupplier.image}"
                                                                                 class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">
                                                                         </div>
                                                                         <div class="ms-3">
-                                                                            <h5>${item.nameSP}</h5>
-                                                                            <p class="small mb-0">${item.originSP}</p>
+                                                                            <h5>${item.productSupplier.name}</h5>
+                                                                            <p class="small mb-0">${item.productSupplier.origin}</p>
                                                                         </div>
                                                                     </div>
                                                                     <div class="d-flex flex-row align-items-center">
                                                                         <div style="width: 50px;">
-                                                                            <h5 class="fw-normal mb-0">${item.quantitySP}</h5>
+                                                                            <h5 class="fw-normal mb-0">${item.quantity}</h5>
                                                                         </div>
                                                                         <div style="width: 150px;">
-                                                                            <h5 class="mb-0"><fmt:formatNumber type = "currency" value = "${item.priceSP*item.quantitySP}" /></h5>
+                                                                            <c:set var="reducedPrice" value="${item.price * ((100-item.discount) / 100)}" />
+                                                                            <h5 class="mb-0"><fmt:formatNumber type = "currency" value = "${reducedPrice*item.quantity}" /></h5>
                                                                         </div>
                                                                         <a href="" class="icon-trash" style="color: #cecece;" onclick="removeFromCart(${item.id})"><i class="fas fa-trash-alt"></i></a>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <c:set var="totalPrice" value="${totalPrice + (item.priceSP*item.quantitySP)}" />
+                                                        <c:set var="totalPrice" value="${totalPrice + (reducedPrice*item.quantity)}" />
                                                     </c:forEach>
                                                 </c:when>
                                                 <c:otherwise>
@@ -246,22 +247,23 @@
 
                         // Iterate through sorted products and update HTML
                         response.forEach(function (item) {
-                            var formattedPrice = formatPrice(item.priceSP);
+                            var reducedPrice = item.price * ((100 - item.discount) / 100);
+                            var formattedPrice = formatPrice(reducedPrice * item.quantity);
                             var cardHtml = '<div class="card mb-3">' +
                                     '<div class="card-body">' +
                                     '<div class="d-flex justify-content-between">' +
                                     '<div class="d-flex flex-row align-items-center">' +
                                     '<div>' +
-                                    '<img src="' + item.imageSP + '" class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">' +
+                                    '<img src="' + item.productSupplier.image + '" class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">' +
                                     '</div>' +
                                     '<div class="ms-3">' +
-                                    '<h5>' + item.nameSP + '</h5>' +
-                                    '<p class="small mb-0">' + item.originSP + '</p>' +
+                                    '<h5>' + item.productSupplier.name + '</h5>' +
+                                    '<p class="small mb-0">' + item.productSupplier.origin + '</p>' +
                                     '</div>' +
                                     '</div>' +
                                     '<div class="d-flex flex-row align-items-center">' +
                                     '<div style="width: 50px;">' +
-                                    '<h5 class="fw-normal mb-0">' + item.quantitySP + '</h5>' +
+                                    '<h5 class="fw-normal mb-0">' + item.quantity + '</h5>' +
                                     '</div>' +
                                     '<div style="width: 150px;">' +
                                     '<h5 class="mb-0">' + formattedPrice + '</h5>' +
@@ -295,7 +297,7 @@
                     alert('Giỏ hàng của bạn rỗng. Không thể thực hiện thanh toán.');
                     return;
                 }
-                
+
                 var phone = document.getElementById('phone').value.trim();
                 var address = document.getElementById('address').value.trim();
                 console.log(phone);
@@ -330,6 +332,7 @@
                         console.error("Error (checkout):", xhr);
                     }
                 });
+
             }
 
         </script>

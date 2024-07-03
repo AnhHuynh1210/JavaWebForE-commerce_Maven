@@ -15,14 +15,11 @@ import java.util.List;
 public interface IProductDAO extends IGenericDAO<ProductModel>{
     List<ProductModel> findAll(PageRequest page);
     ProductModel findOne(int id);
-    List<ProductModel> findByCategoryId(int id);
+    ProductModel findOneByNCC(int id_spncc);
     List<ProductModel> findRelatedProducts(int id, int id_ctbrand);
-    int insertSPC(ProductModel product);
-    int insertSPNCC(ProductModel product);
-    void updateSPC(ProductModel product);
-    void updateSPNCC(ProductModel product);
-    void deleteSPC(int id);
-    void deleteSPNCC(int id);
+    int insert(ProductModel product);
+    void update(ProductModel product);
+    void delete(int id);
     int getTotalItem();
     int getTotalItemBySearch(PageRequest page);
     

@@ -18,23 +18,15 @@ public interface IProductService {
 
     ProductModel findOne(int id);
 
-    List<ProductModel> findByCategoryId(int id);
-
     List<ProductModel> findRelatedProducts(int id, int id_ctbrand);
 
-    ProductModel insertSPC(ProductModel product);
+    ProductModel insert(ProductModel product);
 
-    ProductModel insertSPNCC(ProductModel product);
+    ProductModel update(ProductModel product);
 
-    ProductModel updateSPC(ProductModel product);
-
-    ProductModel updateSPNCC(ProductModel product);
-
-    void deleteSPC(int[] ids);
-
-    void deleteSPNCC(int[] ids);
+    void delete(int[] ids);
 
     int getTotalItem();
-    
+
     int getTotalItemBySearch(PageRequest page);
 }

@@ -72,7 +72,7 @@ public class ProductDetailController extends HttpServlet {
 
         ProductModel proModel = FormUtil.toModel(ProductModel.class, request); //setId(value of parameter)
         proModel = proService.findOne(proModel.getId());
-        proModel.setListResult(proService.findRelatedProducts(proModel.getId(), proModel.getId_ctBrand()));
+        proModel.setListResult(proService.findRelatedProducts(proModel.getId(), proModel.getProductSupplier().getId_ctBrand()));
         request.setAttribute(SystemConstant.PRODUCT_MODEL, proModel);
         RequestDispatcher rd = request.getRequestDispatcher("/views/web/product_detail.jsp");
         rd.forward(request, response);

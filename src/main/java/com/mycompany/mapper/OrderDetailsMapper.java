@@ -6,6 +6,7 @@ package com.mycompany.mapper;
 
 import com.mycompany.model.OrderDetailsModel;
 import com.mycompany.model.ProductModel;
+import com.mycompany.model.ProductSupplierModel;
 import java.sql.ResultSet;
 
 /**
@@ -21,11 +22,14 @@ public class OrderDetailsMapper implements IRowMapper<OrderDetailsModel> {
             detail.setId(rs.getInt("id"));
             detail.setId_order(rs.getInt("id_hoadon"));
             
+            ProductSupplierModel productSupplier = new ProductSupplierModel();
+            productSupplier.setImage(rs.getString("image"));
+            productSupplier.setName(rs.getString("name"));
+            productSupplier.setOrigin(rs.getString("origin"));
+            
             ProductModel product = new ProductModel();
             product.setId(rs.getInt("id_spc"));
-            product.setImageSP(rs.getString("image"));
-            product.setNameSP(rs.getString("name"));
-            product.setOriginSP(rs.getString("origin"));
+            product.setProductSupplier(productSupplier);
                         
             detail.setProduct(product);
             detail.setQuantity(rs.getInt("quantity"));
